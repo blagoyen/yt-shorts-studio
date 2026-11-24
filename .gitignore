@@ -1,0 +1,19 @@
+# Dependencies & build outputs
+node_modules/
+dist/
+target/
+src-tauri/target/
+
+# Large local binaries, Whisper models, and Python venv
+resources/models/
+resources/ffmpeg/
+transcription-engine/.venv/
+transcription-engine/__pycache__/
+*.pyc
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

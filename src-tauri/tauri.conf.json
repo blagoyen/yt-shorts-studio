@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "YT Shorts Studio",
+  "version": "1.0.0",
+  "identifier": "com.ytshorts.studio",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1430",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "YT Shorts Studio",
+        "width": 1500,
+        "height": 950,
+        "minWidth": 1120,
+        "minHeight": 720,
+        "center": true,
+        "resizable": true,
+        "decorations": false,
+        "theme": "Light",
+        "backgroundColor": "#F8F7F4"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: data: blob: http://asset.localhost; media-src 'self' asset: data: blob: http://asset.localhost; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost",
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["**/*"]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "resources": {
+      "../resources/ffmpeg/*": "resources/ffmpeg/",
+      "../transcription-engine/transcribe.py": "resources/whisper/transcribe.py",
+      "../transcription-engine/requirements.txt": "resources/whisper/requirements.txt"
+    },
+    "copyright": "YT Shorts Studio",
+    "category": "Video",
+    "shortDescription": "Local gaming Shorts editor.",
+    "longDescription": "Compose gameplay and facecam into vertical shorts, add local AI captions, overlays and audio, and export locally.",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false
+      }
+    }
+  }
+}
