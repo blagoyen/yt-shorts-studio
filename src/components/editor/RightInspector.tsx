@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   AlignCenterHorizontal,
   AlignCenterVertical,
@@ -24,7 +25,7 @@ import {
   Ungroup,
   Unlock,
 } from "lucide-react";
-import { selectedTimelineItem, selectedTimelineItems, useStudio } from "../../stores/studio";
+import { selectedTimelineItem, useStudio } from "../../stores/studio";
 import type {
   AlignMode,
   AnimationPreset,
@@ -644,7 +645,13 @@ export function RightInspector() {
   const setModal = useStudio((s) => s.setModal);
 
   const clip = useStudio(selectedTimelineItem);
-  const multiItems = useStudio(selectedTimelineItems);
+  const multiItems = useMemo(() => {
+    if (!project || !selectedIds.length) return [];
+    const idSet = new Set(selectedIds);
+    return Object.values(project.tracks)
+      .flat()
+      .filter((item) => idSet.has(item.id));
+  }, [project, selectedIds]);
   const media = project?.media.find((item) => item.id === clip?.mediaId || (selection?.type === "media" && selection.id === item.id));
   const caption = project?.captions.find((word) => word.id === selection?.id && selection?.type === "caption");
   const activeGroup = selection?.type === "group" ? project?.groups?.find((g) => g.id === selection.id) : null;

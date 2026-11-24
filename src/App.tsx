@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { Component, useEffect } from "react";
+import type { ErrorInfo, ReactNode } from "react";
 import { listen } from "@tauri-apps/api/event";
 import type {
   ModelDownloadCompleteEvent,
@@ -20,6 +21,39 @@ import { Toasts } from "./components/Toasts";
 import { TopBar } from "./components/TopBar";
 import { selectedTimelineItem, selectedTimelineItems, useStudio } from "./stores/studio";
 import { CANVAS } from "./utils/project";
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("YT Shorts Studio UI error:", error, info);
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 32, fontFamily: "var(--font-sans)", color: "var(--text-primary)", background: "var(--background)", height: "100%" }}>
+          <h2 style={{ marginTop: 0 }}>Something went wrong</h2>
+          <pre style={{ padding: 12, background: "var(--surface)", border: "1px solid var(--border)", overflow: "auto", fontSize: 12 }}>
+            {this.state.error.message}
+          </pre>
+          <button
+            className="btn btn-primary"
+            style={{ marginTop: 12 }}
+            onClick={() => {
+              useStudio.getState().setScreen("library");
+              this.setState({ error: null });
+            }}
+          >
+            Back to Library
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const screen = useStudio((s) => s.screen);
@@ -246,17 +280,19 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app-shell">
-      <TopBar />
-      {screen === "library" ? <ProjectLibrary /> : <EditorWorkspace />}
-      {modal === "layout" && <LayoutSetupModal />}
-      {modal === "settings" && <SettingsDrawer />}
-      {modal === "export" && <ExportPanel />}
-      {modal === "transcribe" && <TranscriptionModal />}
-      {modal === "palette" && <CommandPalette />}
-      {modal === "shortcuts" && <ShortcutsModal />}
-      <Toasts />
-      {busy && <div className="busy-bar" />}
-    </div>
+    <ErrorBoundary>
+      <div className="app-shell">
+        <TopBar />
+        {screen === "library" ? <ProjectLibrary /> : <EditorWorkspace />}
+        {modal === "layout" && <LayoutSetupModal />}
+        {modal === "settings" && <SettingsDrawer />}
+        {modal === "export" && <ExportPanel />}
+        {modal === "transcribe" && <TranscriptionModal />}
+        {modal === "palette" && <CommandPalette />}
+        {modal === "shortcuts" && <ShortcutsModal />}
+        <Toasts />
+        {busy && <div className="busy-bar" />}
+      </div>
+    </ErrorBoundary>
   );
 }
