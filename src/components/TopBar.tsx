@@ -1,5 +1,6 @@
-import { ArrowLeft, Command, Download, Keyboard, Moon, Redo2, Settings2, Sun, Undo2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Command, Download, Keyboard, Moon, Redo2, Save, Settings2, Sun, Undo2 } from "lucide-react";
 import { useStudio } from "../stores/studio";
+import { BrandMark } from "./BrandMark";
 import { WindowControls } from "./WindowControls";
 
 export function TopBar() {
@@ -18,100 +19,87 @@ export function TopBar() {
   const updateAppSettings = useStudio((s) => s.updateAppSettings);
 
   const depsReady = dependencies?.ready ?? false;
-  const isDark = settings?.theme === "dark";
+  const isDark = (settings?.theme ?? "dark") === "dark";
 
   return (
     <header className="topbar" data-tauri-drag-region>
       <div className="brand" data-tauri-drag-region>
         {screen === "editor" && (
-          <button className="icon-btn small" title="Back to project library" onClick={() => setScreen("library")}>
+          <button className="icon-btn icon-btn-round small" title="Back to project library" onClick={() => setScreen("library")}>
             <ArrowLeft size={13} />
           </button>
         )}
-        <div className="brand-mark" data-tauri-drag-region>YS</div>
-        <div data-tauri-drag-region>
-          <div className="brand-name" data-tauri-drag-region>YT Shorts Studio</div>
-          <span className="brand-tag" data-tauri-drag-region>Local gaming shorts editor</span>
-        </div>
-      </div>
-
-      <div className="topbar-divider" data-tauri-drag-region />
-
-      <div className="topbar-project">
-        {screen === "editor" && project ? (
-          <input
-            className="project-name-input"
-            value={project.name}
-            onChange={(event) => setProjectName(event.target.value)}
-            spellCheck={false}
-            aria-label="Project name"
-          />
-        ) : (
-          <span className="topbar-status">Project library</span>
+        <BrandMark size={24} />
+        <span className="brand-wordmark" data-tauri-drag-region>Cutline Studio</span>
+        {screen === "editor" && project && (
+          <>
+            <span className="topbar-divider" data-tauri-drag-region />
+            <input
+              className="project-name-input"
+              value={project.name}
+              onChange={(event) => setProjectName(event.target.value)}
+              spellCheck={false}
+              aria-label="Project name"
+            />
+          </>
         )}
       </div>
 
       <div className="topbar-center" data-tauri-drag-region>
-        <span className="topbar-status" data-tauri-drag-region>
-          {screen === "editor"
-            ? `${project?.media.length ?? 0} media · ${project?.captions.length ?? 0} words · ${dirty ? "unsaved" : "saved"}`
-            : depsReady
-              ? "FFmpeg ready · all processing stays local"
-              : "FFmpeg missing · check dependencies"}
-        </span>
+        <div className="global-info" data-tauri-drag-region>
+          <CheckCircle2 size={12} className="global-info-icon" />
+          <span className="global-info-kicker">{screen === "editor" ? (dirty ? "UNSAVED" : "SAVED") : "STUDIO"}</span>
+          <span className="global-info-text" data-tauri-drag-region>
+            {screen === "editor"
+              ? `${project?.media.length ?? 0} media · ${project?.captions.length ?? 0} words · 9:16 1080×1920`
+              : "Cutline Studio — Local 9:16 Shorts Editor · Keyframes, FX & AI Captions"}
+          </span>
+        </div>
       </div>
 
       <div className="topbar-actions">
         {screen === "editor" && (
           <>
-            <button
-              className="btn btn-sm"
-              title="Command Palette (Ctrl+K)"
-              onClick={() => setModal("palette")}
-            >
+            <button className="btn btn-pill btn-sm" title="Command Palette (Ctrl+K)" onClick={() => setModal("palette")}>
               <Command size={12} /> Actions
             </button>
-            <button
-              className="icon-btn"
-              title="Undo (Ctrl+Z)"
-              disabled={!history.past.length}
-              onClick={undo}
-            >
-              <Undo2 size={15} />
+            <button className="icon-btn icon-btn-round" title="Undo (Ctrl+Z)" disabled={!history.past.length} onClick={undo}>
+              <Undo2 size={14} />
             </button>
-            <button
-              className="icon-btn"
-              title="Redo (Ctrl+Y)"
-              disabled={!history.future.length}
-              onClick={redo}
-            >
-              <Redo2 size={15} />
+            <button className="icon-btn icon-btn-round" title="Redo (Ctrl+Y)" disabled={!history.future.length} onClick={redo}>
+              <Redo2 size={14} />
             </button>
-            <button className="btn btn-sm" title="Save project (Ctrl+S)" onClick={() => void saveProject(true)}>
-              Save
+            <button className="icon-btn icon-btn-round" title="Save project (Ctrl+S)" onClick={() => void saveProject(true)}>
+              <Save size={14} />
             </button>
           </>
         )}
         <button
-          className="icon-btn"
+          className={`dep-pill ${depsReady ? "dep-ok" : "dep-warn"}`}
+          onClick={() => setModal("settings")}
+          title="Check local FFmpeg & Whisper dependencies"
+        >
+          <span className={`dot ${depsReady ? "dot-ok" : "dot-warn"}`} />
+          <span>{depsReady ? "Tools ready" : "Check tools"}</span>
+        </button>
+        <button
+          className="icon-btn icon-btn-round"
           title={isDark ? "Switch to light theme" : "Switch to dark theme"}
           onClick={() => void updateAppSettings({ theme: isDark ? "light" : "dark" })}
         >
-          {isDark ? <Sun size={15} /> : <Moon size={15} />}
+          {isDark ? <Sun size={14} /> : <Moon size={14} />}
         </button>
-        <button className="icon-btn" title="Keyboard shortcuts (?)" onClick={() => setModal("shortcuts")}>
-          <Keyboard size={15} />
+        <button className="icon-btn icon-btn-round" title="Keyboard shortcuts (?)" onClick={() => setModal("shortcuts")}>
+          <Keyboard size={14} />
         </button>
-        <button className="icon-btn" title="Settings" onClick={() => setModal("settings")}>
-          <Settings2 size={15} />
+        <button className="icon-btn icon-btn-round" title="Settings" onClick={() => setModal("settings")}>
+          <Settings2 size={14} />
         </button>
-        <button
-          className="btn btn-primary"
-          disabled={screen !== "editor" || !project}
-          onClick={() => setModal("export")}
-        >
-          <Download size={14} /> Export
-        </button>
+        {screen === "editor" && project && (
+          <button className="btn btn-cta btn-pill" onClick={() => setModal("export")}>
+            <Download size={13} /> Export
+          </button>
+        )}
         <WindowControls />
       </div>
     </header>

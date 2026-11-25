@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "YT Shorts Studio",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "identifier": "com.ytshorts.studio",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -21,8 +21,8 @@
         "center": true,
         "resizable": true,
         "decorations": false,
-        "theme": "Light",
-        "backgroundColor": "#F8F7F4"
+        "theme": "Dark",
+        "backgroundColor": "#0A0A0A"
       }
     ],
     "security": {

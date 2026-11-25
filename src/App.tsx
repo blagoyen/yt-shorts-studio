@@ -9,6 +9,7 @@ import type {
   TranscriptionCompleteEvent,
   TranscriptionProgressEvent,
 } from "./types";
+import { AsciiBackdrop } from "./components/AsciiBackdrop";
 import { CommandPalette } from "./components/CommandPalette";
 import { SettingsDrawer } from "./components/SettingsDrawer";
 import { ShortcutsModal } from "./components/ShortcutsModal";
@@ -59,7 +60,7 @@ export default function App() {
   const screen = useStudio((s) => s.screen);
   const modal = useStudio((s) => s.modal);
   const busy = useStudio((s) => s.busy);
-  const theme = useStudio((s) => s.settings?.theme ?? "light");
+  const theme = useStudio((s) => s.settings?.theme ?? "dark");
   const autosaveIntervalSeconds = useStudio((s) => s.settings?.autosaveIntervalSeconds ?? 30);
 
   useEffect(() => {
@@ -281,7 +282,8 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="app-shell">
+      <div className={`app-shell ${screen === "editor" ? "is-editor" : "is-library"}`}>
+        <AsciiBackdrop variant="ambient" />
         <TopBar />
         {screen === "library" ? <ProjectLibrary /> : <EditorWorkspace />}
         {modal === "layout" && <LayoutSetupModal />}

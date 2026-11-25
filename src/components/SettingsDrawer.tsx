@@ -73,8 +73,8 @@ export function SettingsDrawer() {
                   <div className="property-group">
                     <span className="field-label">Theme</span>
                     <select className="select" value={draft.theme} onChange={(event) => patch({ theme: event.target.value as AppSettings["theme"] })}>
-                      <option value="light">Light · YT Cutter</option>
-                      <option value="dark">Dark</option>
+                      <option value="dark">Dark · Cutline</option>
+                      <option value="light">Light · Editorial</option>
                     </select>
                   </div>
                 </>

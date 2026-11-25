@@ -5,15 +5,22 @@ import { formatTime, projectDuration } from "../../utils/project";
 import { VerticalCanvas } from "./VerticalCanvas";
 
 export function PreviewPanel() {
-  const store = useStudio();
-  const { project, playheadMs, playing, settings } = store;
+  const project = useStudio((s) => s.project);
+  const playheadMs = useStudio((s) => s.playheadMs);
+  const playing = useStudio((s) => s.playing);
+  const previewQuality = useStudio((s) => s.settings?.previewQuality ?? "medium");
+  const updateAppSettings = useStudio((s) => s.updateAppSettings);
+  const setModal = useStudio((s) => s.setModal);
+  const setPlayhead = useStudio((s) => s.setPlayhead);
+  const setPlaying = useStudio((s) => s.setPlaying);
+
   const duration = projectDuration(project);
   const frameMs = 1000 / (project?.canvas.fps || 30);
 
   const hasVideo = useMemo(
     () =>
       !!project?.tracks.video.some(
-        (clip) => playheadMs >= clip.startMs && playheadMs < clip.startMs + clip.durationMs,
+        (clip) => !clip.hidden && playheadMs >= clip.startMs && playheadMs < clip.startMs + clip.durationMs,
       ),
     [project?.tracks.video, playheadMs],
   );
@@ -47,10 +54,10 @@ export function PreviewPanel() {
         <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
           <select
             className="select"
-            style={{ width: 104, height: 28, fontSize: 10 }}
-            value={settings?.previewQuality ?? "medium"}
+            style={{ width: 112, height: 28, fontSize: 10 }}
+            value={previewQuality}
             onChange={(event) =>
-              store.updateAppSettings({ previewQuality: event.target.value as "low" | "medium" | "high" })
+              void updateAppSettings({ previewQuality: event.target.value as "low" | "medium" | "high" })
             }
             title="Preview quality"
           >
@@ -58,8 +65,8 @@ export function PreviewPanel() {
             <option value="medium">Quality · med</option>
             <option value="high">Quality · high</option>
           </select>
-          <button className="btn btn-sm" onClick={() => store.setModal("layout")}>
-            <LayoutTemplate size={13} /> Set up layout
+          <button className="btn btn-sm btn-pill" onClick={() => setModal("layout")}>
+            <LayoutTemplate size={12} /> Layout
           </button>
         </div>
       </div>
@@ -69,30 +76,31 @@ export function PreviewPanel() {
           project={project}
           playheadMs={playheadMs}
           playing={playing}
-          onTimeChange={store.setPlayhead}
+          onTimeChange={setPlayhead}
         />
       </div>
 
       <div className="preview-transport">
         <div className="transport-row">
-          <button className="icon-btn small" title="Previous frame (Left)" onClick={() => store.setPlayhead(playheadMs - frameMs)}>
-            <SkipBack size={13} />
-          </button>
           <button
-            className="icon-btn"
+            className="play-btn-circle"
             title="Play / pause (Space)"
             onClick={() => {
-              if (playheadMs >= duration && duration > 0) store.setPlayhead(0);
-              store.setPlaying(!playing);
+              if (playheadMs >= duration && duration > 0) setPlayhead(0);
+              setPlaying(!playing);
             }}
           >
-            {playing ? <Pause size={15} /> : <Play size={15} />}
+            {playing ? <Pause size={15} /> : <Play size={15} style={{ marginLeft: 2 }} />}
           </button>
-          <button className="icon-btn small" title="Next frame (Right)" onClick={() => store.setPlayhead(playheadMs + frameMs)}>
-            <SkipForward size={13} />
+          <button className="icon-btn icon-btn-round small" title="Previous frame (Left)" onClick={() => setPlayhead(playheadMs - frameMs)}>
+            <SkipBack size={12} />
           </button>
-          <div className="transport-time">
-            {formatTime(playheadMs)} <span className="muted">/ {formatTime(duration)}</span>
+          <button className="icon-btn icon-btn-round small" title="Next frame (Right)" onClick={() => setPlayhead(playheadMs + frameMs)}>
+            <SkipForward size={12} />
+          </button>
+          <div className="transport-time-pill">
+            <strong>{formatTime(playheadMs)}</strong>
+            <span className="muted"> / {formatTime(duration)}</span>
           </div>
           <input
             className="scrub"
@@ -101,13 +109,13 @@ export function PreviewPanel() {
             max={Math.max(1, duration)}
             step={1}
             value={Math.min(playheadMs, Math.max(1, duration))}
-            onChange={(event) => store.setPlayhead(Number(event.target.value))}
+            onChange={(event) => setPlayhead(Number(event.target.value))}
             style={{ appearance: "none" }}
           />
         </div>
         <div className="transport-hint">
           <span>Canvas 1080 × 1920 · {project.canvas.fps} FPS</span>
-          <span>Space play · S split · Ctrl+Z undo</span>
+          <span><kbd className="kbd">Space</kbd> Play · <kbd className="kbd">S</kbd> Split · <kbd className="kbd">Ctrl+K</kbd> Actions</span>
         </div>
       </div>
     </section>

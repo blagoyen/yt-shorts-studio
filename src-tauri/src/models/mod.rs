@@ -26,7 +26,7 @@ impl Default for AppSettings {
             default_export_folder: None,
             autosave_interval_seconds: 30,
             preview_quality: "medium".to_string(),
-            theme: "light".to_string(),
+            theme: "dark".to_string(),
             ffmpeg_path: None,
             ffprobe_path: None,
             whisper_model: "small".to_string(),

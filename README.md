@@ -29,10 +29,19 @@ npm install
 npm run app:dev
 ```
 
-## Verification & Build
+## Release Agent
+
+Automatically audit (`tsc`, `vite build`, `render_check`), bump SemVer across `package.json`, `Cargo.toml`, and `tauri.conf.json`, build the Windows NSIS installer, tag, push, and publish a GitHub Release:
 
 ```bash
-npm run build
-cargo run --manifest-path src-tauri/Cargo.toml --bin render_check
-npm run app:build
+npm run release:patch   # 1.1.0 -> 1.1.1
+npm run release:minor   # 1.1.0 -> 1.2.0
+npm run release:major   # 1.1.0 -> 2.0.0
+```
+
+Or run directly with custom flags:
+
+```powershell
+.\scripts\release-agent.ps1 -Version 2.0.0
+.\scripts\release-agent.ps1 -Bump patch -DryRun
 ```

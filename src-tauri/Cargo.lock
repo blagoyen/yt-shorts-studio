@@ -4993,7 +4993,7 @@ dependencies = [
 
 [[package]]
 name = "yt-shorts-studio"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "serde",
  "serde_json",
