@@ -257,6 +257,14 @@ button:disabled {
   font-size: 9px;
 }
 
+.btn-xs {
+  height: 22px;
+  padding: 0 7px;
+  font-size: 8.5px;
+  gap: 4px;
+  letter-spacing: 0.08em;
+}
+
 .icon-btn {
   width: 32px;
   height: 32px;
@@ -551,7 +559,7 @@ textarea.input:focus {
 .editor-main {
   flex: 1;
   display: grid;
-  grid-template-columns: 268px minmax(320px, 1fr) 300px;
+  grid-template-columns: 286px minmax(320px, 1fr) 304px;
   min-height: 0;
 }
 
@@ -572,23 +580,34 @@ textarea.input:focus {
 }
 
 .panel-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   border-bottom: 1px solid var(--border);
 }
 
 .panel-tab {
-  flex: 1 0 auto;
-  min-width: 66px;
-  height: 38px;
+  height: 34px;
   border: 0;
   border-right: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
   background: transparent;
   color: var(--label);
   font-size: 8.5px;
   font-weight: 750;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  padding: 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-tab:nth-child(3n) {
+  border-right: 0;
+}
+
+.panel-tab:nth-last-child(-n + 3) {
+  border-bottom: 0;
 }
 
 .panel-tab.active {
@@ -672,7 +691,8 @@ textarea.input:focus {
 
 .layer-icon {
   display: inline-flex;
-  color: var(--muted);
+  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 .layer-name {
@@ -691,11 +711,12 @@ textarea.input:focus {
 }
 
 .layer-badge {
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--muted);
+  color: var(--text-secondary);
   border: 1px solid var(--border);
-  padding: 1px 3px;
+  padding: 1px 4px;
+  flex-shrink: 0;
 }
 
 .font-preview {
@@ -713,12 +734,13 @@ textarea.input:focus {
 .media-item {
   border: 1px solid var(--border);
   background: var(--surface);
-  padding: 7px;
+  padding: 8px;
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr);
   gap: 9px;
   text-align: left;
   width: 100%;
+  overflow: hidden;
 }
 
 .media-item:hover,
@@ -765,8 +787,22 @@ textarea.input:focus {
 
 .media-actions {
   display: flex;
-  gap: 5px;
-  margin-top: 7px;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.compact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.compact-grid .btn {
+  width: 100%;
+  padding: 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .import-grid {
@@ -892,17 +928,18 @@ textarea.input:focus {
 
 .canvas-caption {
   position: absolute;
-  left: 0;
-  right: 0;
+  width: max-content;
+  max-width: 92%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 0.18em;
-  padding: 0 48px;
+  padding: 0 24px;
   text-align: center;
   pointer-events: auto;
   cursor: move;
   user-select: none;
+  z-index: 15;
 }
 
 .canvas-caption.selected {
@@ -1043,6 +1080,18 @@ textarea.input:focus {
   background: var(--muted);
   position: relative;
   cursor: pointer;
+  border-radius: 2px;
+}
+
+.scrub::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .scrub-fill {
@@ -1115,7 +1164,7 @@ textarea.input:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 150px;
+  max-width: 100%;
 }
 
 .range {
@@ -1188,6 +1237,8 @@ textarea.input:focus {
   flex: 1;
   display: flex;
   min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .track-labels {

@@ -274,7 +274,7 @@ export function LeftPanel() {
           <>
             <div className="panel-section">
               <span className="section-title">Shapes & callouts</span>
-              <div className="import-grid" style={{ marginTop: 10 }}>
+              <div className="compact-grid" style={{ marginTop: 10 }}>
                 <button className="btn btn-sm" onClick={() => addShapeObject("rect")}><Square size={12} /> Rectangle</button>
                 <button className="btn btn-sm" onClick={() => addShapeObject("circle")}><Circle size={12} /> Circle</button>
                 <button className="btn btn-sm" onClick={() => addShapeObject("pill")}><Tag size={12} /> Pill bar</button>
@@ -324,7 +324,7 @@ export function LeftPanel() {
 
             <div className="panel-section">
               <span className="section-title">Color grade look</span>
-              <div className="import-grid" style={{ marginTop: 10 }}>
+              <div className="compact-grid" style={{ marginTop: 10 }}>
                 {FILTER_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
